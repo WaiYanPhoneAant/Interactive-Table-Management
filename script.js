@@ -1,4 +1,5 @@
 document.getElementById("createDivButton").addEventListener("click", createDraggableDiv);
+document.getElementById("clearAllButton").addEventListener("click", clearAllDivs);
 
 // Load saved positions and create draggable divs
 window.onload = function() {
@@ -7,12 +8,19 @@ window.onload = function() {
     
     savedDivs.forEach((divData, index) => {
         const newDiv = document.createElement("div");
-        newDiv.className = "draggable";
+        newDiv.className = `draggable ${divData.shape}`;
         newDiv.textContent = "Drag me!";
         newDiv.style.top = divData.top;
         newDiv.style.left = divData.left;
         newDiv.dataset.id = index; // Assign a unique ID to each div
-
+        
+        // Add remove button to the div
+        const removeButton = document.createElement("button");
+        removeButton.className = "remove-button";
+        removeButton.textContent = "X";
+        removeButton.onclick = () => removeDiv(newDiv);
+        
+        newDiv.appendChild(removeButton);
         container.appendChild(newDiv);
         dragElement(newDiv);
     });
@@ -20,8 +28,9 @@ window.onload = function() {
 
 function createDraggableDiv() {
     const container = document.getElementById("container");
+    const shape = document.getElementById("shapeSelector").value;
     const newDiv = document.createElement("div");
-    newDiv.className = "draggable";
+    newDiv.className = `draggable ${shape}`;
     newDiv.textContent = "Drag me!";
     newDiv.dataset.id = document.getElementsByClassName("draggable").length; // Assign a unique ID to each div
     
@@ -29,6 +38,13 @@ function createDraggableDiv() {
     newDiv.style.top = '50px';
     newDiv.style.left = '50px';
     
+    // Add remove button to the div
+    const removeButton = document.createElement("button");
+    removeButton.className = "remove-button";
+    removeButton.textContent = "X";
+    removeButton.onclick = () => removeDiv(newDiv);
+    
+    newDiv.appendChild(removeButton);
     container.appendChild(newDiv);
     dragElement(newDiv);
     savePositions(); // Save positions after creating a new div
@@ -78,9 +94,26 @@ function savePositions() {
     for (let div of divs) {
         positions.push({
             top: div.style.top,
-            left: div.style.left
+            left: div.style.left,
+            shape: div.classList.contains("square") ? "square" :
+                   div.classList.contains("circle") ? "circle" :
+                   "rectangle"
         });
     }
     
     localStorage.setItem('draggableDivs', JSON.stringify(positions));
+}
+
+function clearAllDivs() {
+    const container = document.getElementById("container");
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+    localStorage.removeItem('draggableDivs');
+}
+
+function removeDiv(div) {
+    const container = document.getElementById("container");
+    container.removeChild(div);
+    savePositions(); // Save positions after removing a div
 }
