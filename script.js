@@ -1,10 +1,29 @@
 document.getElementById("createDivButton").addEventListener("click", createDraggableDiv);
 
+// Load saved positions and create draggable divs
+window.onload = function() {
+    const container = document.getElementById("container");
+    const savedDivs = JSON.parse(localStorage.getItem('draggableDivs')) || [];
+    
+    savedDivs.forEach((divData, index) => {
+        const newDiv = document.createElement("div");
+        newDiv.className = "draggable";
+        newDiv.textContent = "Drag me!";
+        newDiv.style.top = divData.top;
+        newDiv.style.left = divData.left;
+        newDiv.dataset.id = index; // Assign a unique ID to each div
+
+        container.appendChild(newDiv);
+        dragElement(newDiv);
+    });
+}
+
 function createDraggableDiv() {
     const container = document.getElementById("container");
     const newDiv = document.createElement("div");
     newDiv.className = "draggable";
     newDiv.textContent = "Drag me!";
+    newDiv.dataset.id = document.getElementsByClassName("draggable").length; // Assign a unique ID to each div
     
     // Position the new div at a random location within the container
     newDiv.style.top = `${Math.random() * (container.clientHeight - 100)}px`;
@@ -12,6 +31,7 @@ function createDraggableDiv() {
     
     container.appendChild(newDiv);
     dragElement(newDiv);
+    savePositions(); // Save positions after creating a new div
 }
 
 // Make the DIV element draggable:
@@ -47,5 +67,20 @@ function dragElement(elmnt) {
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
+        savePositions(); // Save positions after dragging
     }
+}
+
+function savePositions() {
+    const divs = document.getElementsByClassName("draggable");
+    const positions = [];
+    
+    for (let div of divs) {
+        positions.push({
+            top: div.style.top,
+            left: div.style.left
+        });
+    }
+    
+    localStorage.setItem('draggableDivs', JSON.stringify(positions));
 }
