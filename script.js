@@ -25,9 +25,9 @@ function createDraggableDiv() {
     newDiv.textContent = "Drag me!";
     newDiv.dataset.id = document.getElementsByClassName("draggable").length; // Assign a unique ID to each div
     
-    // Position the new div at a random location within the container
-    newDiv.style.top = `${Math.random() * (container.clientHeight - 100)}px`;
-    newDiv.style.left = `${Math.random() * (container.clientWidth - 100)}px`;
+    // Position the new div at a specific location within the container
+    newDiv.style.top = '50px';
+    newDiv.style.left = '50px';
     
     container.appendChild(newDiv);
     dragElement(newDiv);
