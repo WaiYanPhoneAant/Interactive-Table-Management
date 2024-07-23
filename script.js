@@ -9,7 +9,7 @@ window.onload = function() {
     savedDivs.forEach((divData, index) => {
         const newDiv = document.createElement("div");
         newDiv.className = `draggable ${divData.shape}`;
-        newDiv.textContent = "Drag me!";
+        newDiv.textContent = divData.text || "Drag me!";
         newDiv.style.top = divData.top;
         newDiv.style.left = divData.left;
         newDiv.dataset.id = index; // Assign a unique ID to each div
@@ -29,9 +29,10 @@ window.onload = function() {
 function createDraggableDiv() {
     const container = document.getElementById("container");
     const shape = document.getElementById("shapeSelector").value;
+    const textInput = document.getElementById("textInput").value;
     const newDiv = document.createElement("div");
     newDiv.className = `draggable ${shape}`;
-    newDiv.textContent = "Drag me!";
+    newDiv.textContent = textInput || "Drag me!";
     newDiv.dataset.id = document.getElementsByClassName("draggable").length; // Assign a unique ID to each div
     
     // Position the new div at a specific location within the container
@@ -97,7 +98,8 @@ function savePositions() {
             left: div.style.left,
             shape: div.classList.contains("square") ? "square" :
                    div.classList.contains("circle") ? "circle" :
-                   "rectangle"
+                   "rectangle",
+            text: div.textContent.replace("X", "").trim() // Remove the "X" from the text
         });
     }
     
